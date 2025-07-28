@@ -72,6 +72,27 @@ def read_file_content(file_path):
     except Exception as e:
         return f"Error reading file: {e}"
 
+def write_file_content(file_path, content):
+    """Writes content to the specified file. Creates the file if it doesn't exist."""
+    try:
+        with open(file_path, 'w') as f:
+            f.write(content)
+        return f"Content written to {file_path}"
+    except Exception as e:
+        return f"Error writing to file: {e}"
+
+def edit_file_content(file_path, old_text, new_text):
+    """Replaces old_text with new_text in the specified file."""
+    try:
+        with open(file_path, 'r') as f:
+            content = f.read()
+        new_content = content.replace(old_text, new_text)
+        with open(file_path, 'w') as f:
+            f.write(new_content)
+        return f"Content in {file_path} updated."
+    except Exception as e:
+        return f"Error editing file: {e}"
+
 def summarize_text(text):
     """Summarizes the given text using sumy."""
     parser = PlaintextParser.from_string(text, Tokenizer("english"))
@@ -118,5 +139,28 @@ def run_command(command):
     except Exception as e:
         return f"Error executing command: {e}"
 
+def search_youtube_music(query):
+    """Searches for music on YouTube."""
+    try:
+        results = []
+        for j in search(f"{query} youtube music", num_results=3):
+            results.append(j)
+        return "\n".join(results) if results else "No music found on YouTube."
+    except Exception as e:
+        return f"Error searching YouTube music: {e}"
+
 def get_llm_response(prompt, conversation_history):
     return ollama_integration.get_ollama_response(prompt, conversation_history=conversation_history)
+
+def open_app_by_name(app_name):
+    """Opens the specified application by name using subprocess.Popen."""
+    try:
+        if os.name == 'nt':  # Windows
+            subprocess.Popen(app_name, shell=True)
+        elif os.name == 'posix':  # macOS or Linux
+            subprocess.Popen(['open', app_name])
+        else:
+            return "Unsupported operating system."
+        return f"Opening {app_name}"
+    except Exception as e:
+        return f"Error opening application: {e}"

@@ -51,8 +51,8 @@ def speak(text, lang='en'):
 def main():
     """Main function to run the assistant."""
     global conversation_history
-    speak("Hello! I'm your assistant. How can I help you today?")
-    conversation_history.append({'role': 'assistant', 'content': "Hello! I'm your assistant. How can I help you today?"})
+    speak("Hello! I'm Jarvis. How can I help you today?")
+    conversation_history.append({'role': 'assistant', 'content': "Hello! I'm Jarvis. How can I help you today?"})
 
     while True:
         command, detected_language = listen()
@@ -91,7 +91,7 @@ def main():
 
             elif "open" in command:
                 app_name = command.replace("open", "").strip()
-                response = actions.open_application(app_name)
+                response = actions.open_app_by_name(app_name)
                 speak(response, lang=speak_lang)
 
             elif "read file" in command:
@@ -136,7 +136,7 @@ def main():
                     print(f"SHA-256 Hash: {file_hash}")
                     speak(f"The SHA-256 hash of the file is {file_hash}", lang=speak_lang)
 
-            elif "run command" in command:
+            elif "run command" in command or "execute command" in command:
                 speak("What command should I run?", lang=speak_lang)
                 shell_command, _ = listen()
                 if shell_command:
@@ -144,16 +144,72 @@ def main():
                     print(command_output)
                     speak("Command executed. Output is in the console.", lang=speak_lang)
 
+            elif "search music" in command or "find music" in command:
+                query = command.replace("search music", "").replace("find music", "").strip()
+                if query:
+                    speak(f"Searching for music by {query} on YouTube...", lang=speak_lang)
+                    music_results = actions.search_youtube_music(query)
+                    print(music_results)
+                    speak(music_results, lang=speak_lang)
+                else:
+                    speak("What music would you like me to search for?", lang=speak_lang)
+
+            elif "give me options" in command:
+                speak("Would you like to create a file or a folder?", lang=speak_lang)
+                choice, _ = listen()
+                if choice and "file" in choice:
+                    speak("Sure, what would you like to name the file?", lang=speak_lang)
+                    file_name, _ = listen()
+                    if file_name:
+                        response = actions.create_file(file_name)
+                        speak(response, lang=speak_lang)
+                elif choice and "folder" in choice:
+                    speak("Okay, what should I name the new folder?", lang=speak_lang)
+                    folder_name, _ = listen()
+                    if folder_name:
+                        response = actions.create_folder(folder_name)
+                        speak(response, lang=speak_lang)
+                else:
+                    speak("I didn't understand your choice.", lang=speak_lang)
+
             elif "exit" in command or "quit" in command:
                 speak("Goodbye! Have a great day!", lang=speak_lang)
                 break
 
             else:
                 # Fallback to conversational AI
-                response = ollama_integration.get_ollama_response(command, conversation_history=conversation_history)
-                speak(response, lang=speak_lang)
-                conversation_history.append({'role': 'user', 'content': command})
-                conversation_history.append({'role': 'assistant', 'content': response})
+                llm_response = ollama_integration.get_ollama_response(command, conversation_history=conversation_history)
+                
+                try:
+                    # Attempt to parse the LLM's response as JSON
+                    parsed_response = json.loads(llm_response)
+                    action = parsed_response.get("action")
+                    argument = parsed_response.get("argument")
+
+                    if action == "open_app":
+                        speak(f"Opening {argument}...", lang=speak_lang)
+                        response = actions.open_app_by_name(argument)
+                        speak(response, lang=speak_lang)
+                    elif action == "run_command":
+                        speak(f"Running command: {argument}...", lang=speak_lang)
+                        response = actions.run_command(argument)
+                        print(response)
+                        speak("Command executed. Output is in the console.", lang=speak_lang)
+                    elif action == "web_search":
+                        speak(f"Searching for {argument}...", lang=speak_lang)
+                        response = actions.web_search(argument)
+                        print(response)
+                        speak(response, lang=speak_lang)
+                    else:
+                        # If JSON but unknown action, treat as conversational
+                        speak(llm_response, lang=speak_lang)
+                        conversation_history.append({'role': 'user', 'content': command})
+                        conversation_history.append({'role': 'assistant', 'content': llm_response})
+                except json.JSONDecodeError:
+                    # If not JSON, treat as conversational
+                    speak(llm_response, lang=speak_lang)
+                    conversation_history.append({'role': 'user', 'content': command})
+                    conversation_history.append({'role': 'assistant', 'content': llm_response})
 
 if __name__ == "__main__":
     main()
