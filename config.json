@@ -1,16 +1,22 @@
 {
+  "config": {
     "apps": {
-        "notepad": "notepad.exe",
-        "calculator": "calc.exe",
-        "chrome": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-        "word": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE",
-        "excel": "C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE",
-        "vscode": "code"
+      "notepad": "notepad.exe",
+      "calculator": "calc.exe",
+      "chrome": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "word": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE",
+      "excel": "C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE",
+      "vscode": "code"
     },
     "settings": {
-        "max_response_length": 500,
-        "listen_timeout": 8,
-        "command_timeout": 30,
-        "default_search_engine": "google"
+      "max_response_length": 500,
+      "listen_timeout": 8,
+      "command_timeout": 30,
+      "default_search_engine": "google",
+      "name": "Jarvis"
     }
-}
+  },
+  "name": "Jarvis"
+  }
+
+
