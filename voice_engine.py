@@ -31,9 +31,34 @@ class VoiceEngine:
             self.voice_config = config['config']['settings']['voice']
 
     def _configure_voice(self, lang='en'):
-        """Configure voice settings based on language"""
-        voice_id = self.voice_config['english_voice'] if lang == 'en' else self.voice_config['indonesian_voice']
-        self.engine.setProperty('voice', voice_id)
+        """Configure voice settings based on language and gender."""
+        voices = self.engine.getProperty('voices')
+        gender = self.voice_config.get('gender', 'female').lower()
+        
+        # Filter voices by language and gender
+        if lang == 'en':
+            voice_id = self.voice_config.get('english_voice')
+        elif lang == 'id':
+            voice_id = self.voice_config.get('indonesian_voice')
+        else:
+            voice_id = None
+
+        if voice_id:
+            self.engine.setProperty('voice', voice_id)
+        else:
+            # Fallback to searching for a voice
+            for voice in voices:
+                if gender == voice.gender.lower():
+                    try:
+                        if lang == 'en' and any('en' in str(lang).lower() for lang in voice.languages):
+                            self.engine.setProperty('voice', voice.id)
+                            break
+                        if lang == 'id' and any('id' in str(lang).lower() for lang in voice.languages):
+                            self.engine.setProperty('voice', voice.id)
+                            break
+                    except:
+                        pass
+
         self.engine.setProperty('rate', self.voice_config['rate'])
         self.engine.setProperty('volume', self.voice_config['volume'])
 
@@ -78,3 +103,15 @@ class VoiceEngine:
         self.queue.put('SHUTDOWN')
         self.thread.join()
         self.engine.stop()
+
+    def set_voice(self, voice_id):
+        """Set a new voice by ID"""
+        self.engine.setProperty('voice', voice_id)
+
+    def set_rate(self, rate):
+        """Set a new speech rate"""
+        self.engine.setProperty('rate', rate)
+
+    def set_volume(self, volume):
+        """Set a new volume level"""
+        self.engine.setProperty('volume', volume)

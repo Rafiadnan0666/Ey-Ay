@@ -1,0 +1,165 @@
+{
+  "conversation_history": [
+    {
+      "role": "assistant",
+      "content": "Hello! I'm your advanced AI assistant. How can I help you today?",
+      "timestamp": "2025-08-29T13:44:22.214168"
+    },
+    {
+      "role": "user",
+      "content": "hilang",
+      "timestamp": "2025-08-29T13:51:03.407139"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-08-29T13:51:05.427841"
+    },
+    {
+      "role": "user",
+      "content": "diambil lagi",
+      "timestamp": "2025-08-29T13:51:16.738273"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-08-29T13:51:18.772083"
+    },
+    {
+      "role": "user",
+      "content": "diputusin",
+      "timestamp": "2025-08-29T13:51:44.179928"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-08-29T13:51:46.217159"
+    },
+    {
+      "role": "user",
+      "content": "belum belum",
+      "timestamp": "2025-08-29T13:51:57.281911"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-08-29T13:51:59.298004"
+    },
+    {
+      "role": "user",
+      "content": "cara daftarnya udah acc semua udah",
+      "timestamp": "2025-08-29T13:52:14.584391"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-08-29T13:52:16.610125"
+    },
+    {
+      "role": "user",
+      "content": "nungguin",
+      "timestamp": "2025-08-29T13:54:14.190138"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-08-29T13:54:16.244909"
+    },
+    {
+      "role": "user",
+      "content": "yang aku kasih jaga",
+      "timestamp": "2025-08-29T13:55:33.586400"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-08-29T13:55:35.630472"
+    },
+    {
+      "role": "user",
+      "content": "udah ganti pampersnya pakai pampers atau pipis ke kamar mandi",
+      "timestamp": "2025-08-29T13:56:21.573797"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-08-29T13:56:23.635404"
+    },
+    {
+      "role": "user",
+      "content": "soalnya mau pulang",
+      "timestamp": "2025-08-29T13:56:28.366672"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-08-29T13:56:30.415702"
+    },
+    {
+      "role": "user",
+      "content": "nanti takutnya kalau pulang",
+      "timestamp": "2025-08-29T13:56:37.545194"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-08-29T13:56:39.584071"
+    },
+    {
+      "role": "user",
+      "content": "belum",
+      "timestamp": "2025-08-29T13:56:43.203454"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-08-29T13:56:45.248478"
+    },
+    {
+      "role": "user",
+      "content": "kalau mau pulang harus pipis dulu",
+      "timestamp": "2025-08-29T13:57:02.023237"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-08-29T13:57:04.042923"
+    },
+    {
+      "role": "user",
+      "content": "ke kamar mandi bisa",
+      "timestamp": "2025-08-29T13:57:32.213489"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-08-29T13:57:34.239774"
+    },
+    {
+      "role": "user",
+      "content": "monokrom di kamar mandi dulu",
+      "timestamp": "2025-08-29T13:57:51.466660"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-08-29T13:57:53.491122"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! I'm your advanced AI assistant. How can I help you today?",
+      "timestamp": "2025-08-29T14:10:04.511586"
+    },
+    {
+      "role": "user",
+      "content": "how can i help you",
+      "timestamp": "2025-08-29T14:10:10.976928"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-08-29T14:10:12.996394"
+    }
+  ],
+  "last_updated": "2025-08-29T14:10:12.997395"
+}

@@ -46,27 +46,6 @@ def delete_folder(folder_path):
     except Exception as e:
         return f"Error deleting folder: {e}"
 
-def open_application(app_name):
-    """Opens the specified application from the config file."""
-    try:
-        with open('config.json') as f:
-            config = json.load(f)
-            app_path = config['apps'].get(app_name.lower())
-
-        if not app_path:
-            return f"Application '{app_name}' not found in config.json."
-
-        if os.name == 'nt':
-            os.startfile(app_path)
-        elif os.name == 'posix':
-            subprocess.call(['open', '-a', app_path])
-        else:
-            return "Unsupported operating system."
-        return f"Opening {app_name}"
-    except Exception as e:
-        return f"Error opening application: {e}"
-
-
 def read_file_content(file_path):
     """Reads the content of the specified file."""
     try:
@@ -117,10 +96,6 @@ def scrape_website(url):
         return f"Error scraping website: {e}"
 
 
-from duckduckgo_search import DDGS
-import requests
-from bs4 import BeautifulSoup
-
 def web_search(query):
     """Performs a web search, scrapes the top result, and returns a summary."""
     try:
@@ -140,7 +115,7 @@ def web_search(query):
             summary = summarize_text(scraped_text)
             return summary if summary else "Could not summarize the content."
     except Exception as e:
-        return f"Error performing web search: {e}" 
+        return f"Error performing web search: {e}"
 
 
 def port_scan(target, ports):
@@ -185,9 +160,6 @@ def search_youtube_music(query):
     except Exception as e:
         return f"Error searching YouTube music: {e}"
 
-def get_llm_response(prompt, conversation_history):
-    return ollama_integration.get_ollama_response(prompt, conversation_history=conversation_history)
-
 def open_app_by_name(app_name):
     """Opens the specified application by name using subprocess.Popen."""
     try:
@@ -209,44 +181,6 @@ def list_files(directory="."):
     except Exception as e:
         return f"Error listing files: {e}"
 
-def execute_code(code):
-    """Executes a string of Python code."""
-    try:
-        output = exec(code)
-        return output
-    except Exception as e:
-        return f"Error executing code: {e}"
-
 def task_complete(reasoning):
     """Signals that the task is complete."""
     return reasoning
-
-async def do_until_done(prompt, conversation_history):
-    """Executes a series of actions to complete a task."""
-    while True:
-        llm_response = await asyncio.to_thread(ollama_integration.get_ollama_response, prompt, conversation_history)
-        try:
-            parsed_response = json.loads(llm_response)
-            action = parsed_response.get("action")
-            arguments = parsed_response.get("argument")
-            reasoning = parsed_response.get("reasoning")
-            task_is_complete = parsed_response.get("task_complete")
-
-            if task_is_complete:
-                return reasoning
-
-            if hasattr(sys.modules[__name__], action):
-                action_func = getattr(sys.modules[__name__], action)
-                if asyncio.iscoroutinefunction(action_func):
-                    response = await action_func(**arguments)
-                else:
-                    response = await asyncio.to_thread(action_func, **arguments)
-                
-                print(response)
-                conversation_history.append({'role': 'assistant', 'content': response})
-                prompt = f"The last action returned: {response}. What is the next action?"
-            else:
-                return f"Unknown action: {action}"
-        except json.JSONDecodeError:
-            return llm_response
-
