@@ -1,8 +1,10 @@
 import speech_recognition as sr
-import pyttsx3
 import actions
 import ollama_integration
 import json
+import asyncio
+from voice_engine import VoiceEngine
+from autonomous_agent import AutonomousAgent
 
 # Global variable to store conversation history
 conversation_history = []
@@ -37,179 +39,74 @@ def listen():
 
     return command, detected_language
 
-def speak(text, lang='en'):
-    """Converts text to speech."""
-    engine = pyttsx3.init()
-    engine.setProperty('rate', 150) # Speed of speech
-    if lang == 'id':
-        engine.setProperty('voice', 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices\\Tokens\\TTS_MS_ID-ID_ANDIKA_11.0')
-    else:
-        engine.setProperty('voice', 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices\\Tokens\\TTS_MS_EN-US_DAVID_11.0')
-    engine.say(text)
-    engine.runAndWait()
-
-def main():
+async def main():
     """Main function to run the assistant."""
     global conversation_history
-    speak("Hello! I'm Jarvis. How can I help you today?")
+    voice = VoiceEngine()
+    voice.speak("Hello! I'm Jarvis. How can I help you today?")
     conversation_history.append({'role': 'assistant', 'content': "Hello! I'm Jarvis. How can I help you today?"})
 
     while True:
-        command, detected_language = listen()
+        command, detected_language = await asyncio.to_thread(listen)
 
         if command:
+            print(f"Command recognized: {command}")
             speak_lang = detected_language if detected_language else 'en' # Default to English if language not detected
 
-            # Command handling
-            if "create file" in command:
-                speak("Sure, what would you like to name the file?", lang=speak_lang)
-                file_name, _ = listen()
-                if file_name:
-                    response = actions.create_file(file_name)
-                    speak(response, lang=speak_lang)
-
-            elif "delete file" in command:
-                speak("No problem, which file should I delete?", lang=speak_lang)
-                file_name, _ = listen()
-                if file_name:
-                    response = actions.delete_file(file_name)
-                    speak(response, lang=speak_lang)
-
-            elif "create folder" in command:
-                speak("Okay, what should I name the new folder?", lang=speak_lang)
-                folder_name, _ = listen()
-                if folder_name:
-                    response = actions.create_folder(folder_name)
-                    speak(response, lang=speak_lang)
-
-            elif "delete folder" in command:
-                speak("Alright, which folder do you want to remove?", lang=speak_lang)
-                folder_name, _ = listen()
-                if folder_name:
-                    response = actions.delete_folder(folder_name)
-                    speak(response, lang=speak_lang)
-
-            elif "open" in command:
-                app_name = command.replace("open", "").strip()
-                response = actions.open_app_by_name(app_name)
-                speak(response, lang=speak_lang)
-
-            elif "read file" in command:
-                speak("Which file would you like me to read?", lang=speak_lang)
-                file_name, _ = listen()
-                if file_name:
-                    content = actions.read_file_content(file_name)
-                    speak("I've read the file. Would you like me to read it out loud or summarize it?", lang=speak_lang)
-                    choice, _ = listen()
-                    if choice and "read" in choice:
-                        speak("Here is the content of the file:", lang=speak_lang)
-                        print(content)
-                        speak(content, lang=speak_lang)
-                    elif choice and "summarize" in choice:
-                        summary = actions.summarize_text(content)
-                        speak("Here is a summary of the file:", lang=speak_lang)
-                        speak(summary, lang=speak_lang)
-                        print(summary)
-
-            elif "search for" in command:
-                query = command.replace("search for", "").strip()
-                speak(f"Searching for {query}...", lang=speak_lang)
-                search_results = actions.web_search(query)
-                print(search_results)
-                speak(search_results, lang=speak_lang)
-
-            elif "port scan" in command:
-                speak("What is the target IP address?", lang=speak_lang)
-                target, _ = listen()
-                speak("What ports should I scan?", lang=speak_lang)
-                ports, _ = listen()
-                if target and ports:
-                    scan_result = actions.port_scan(target, ports)
-                    print(scan_result)
-                    speak("Port scan complete. Results are in the console.", lang=speak_lang)
-
-            elif "hash file" in command:
-                speak("Which file should I hash?", lang=speak_lang)
-                file_path, _ = listen()
-                if file_path:
-                    file_hash = actions.hash_file(file_path)
-                    print(f"SHA-256 Hash: {file_hash}")
-                    speak(f"The SHA-256 hash of the file is {file_hash}", lang=speak_lang)
-
-            elif "run command" in command or "execute command" in command:
-                speak("What command should I run?", lang=speak_lang)
-                shell_command, _ = listen()
-                if shell_command:
-                    command_output = actions.run_command(shell_command)
-                    print(command_output)
-                    speak("Command executed. Output is in the console.", lang=speak_lang)
-
-            elif "search music" in command or "find music" in command:
-                query = command.replace("search music", "").replace("find music", "").strip()
-                if query:
-                    speak(f"Searching for music by {query} on YouTube...", lang=speak_lang)
-                    music_results = actions.search_youtube_music(query)
-                    print(music_results)
-                    speak(music_results, lang=speak_lang)
-                else:
-                    speak("What music would you like me to search for?", lang=speak_lang)
-
-            elif "give me options" in command:
-                speak("Would you like to create a file or a folder?", lang=speak_lang)
-                choice, _ = listen()
-                if choice and "file" in choice:
-                    speak("Sure, what would you like to name the file?", lang=speak_lang)
-                    file_name, _ = listen()
-                    if file_name:
-                        response = actions.create_file(file_name)
-                        speak(response, lang=speak_lang)
-                elif choice and "folder" in choice:
-                    speak("Okay, what should I name the new folder?", lang=speak_lang)
-                    folder_name, _ = listen()
-                    if folder_name:
-                        response = actions.create_folder(folder_name)
-                        speak(response, lang=speak_lang)
-                else:
-                    speak("I didn't understand your choice.", lang=speak_lang)
-
-            elif "exit" in command or "quit" in command:
-                speak("Goodbye! Have a great day!", lang=speak_lang)
+            if "exit" in command or "quit" in command:
+                voice.speak("Goodbye! Have a great day!", lang=speak_lang)
+                print("Speaking: Goodbye! Have a great day!")
                 break
 
-            else:
-                # Fallback to conversational AI
-                llm_response = ollama_integration.get_ollama_response(command, conversation_history=conversation_history)
-                
-                try:
-                    # Attempt to parse the LLM's response as JSON
-                    parsed_response = json.loads(llm_response)
-                    action = parsed_response.get("action")
-                    argument = parsed_response.get("argument")
+            if "jarvis enter autonomous mode" in command:
+                voice.speak("Autonomous mode activated. Please state your goal.", lang=speak_lang)
+                print("Speaking: Autonomous mode activated. Please state your goal.")
+                goal, _ = await asyncio.to_thread(listen)
+                if goal:
+                    agent = AutonomousAgent(conversation_history)
+                    response = await agent.run(goal)
+                    voice.speak(response, lang=speak_lang)
+                    print(f"Speaking: {response}")
+                continue
 
-                    if action == "open_app":
-                        speak(f"Opening {argument}...", lang=speak_lang)
-                        response = actions.open_app_by_name(argument)
-                        speak(response, lang=speak_lang)
-                    elif action == "run_command":
-                        speak(f"Running command: {argument}...", lang=speak_lang)
-                        response = actions.run_command(argument)
-                        print(response)
-                        speak("Command executed. Output is in the console.", lang=speak_lang)
-                    elif action == "web_search":
-                        speak(f"Searching for {argument}...", lang=speak_lang)
-                        response = actions.web_search(argument)
-                        print(response)
-                        speak(response, lang=speak_lang)
+            # Fallback to conversational AI
+            print(f"Sending to Ollama: {command}")
+            llm_response = await asyncio.to_thread(ollama_integration.get_ollama_response, command, conversation_history=conversation_history)
+            print(f"Received from Ollama: {llm_response}")
+            
+            try:
+                # Attempt to parse the LLM's response as JSON
+                parsed_response = json.loads(llm_response)
+                print(f"Ollama response parsed as JSON: {parsed_response}")
+                action = parsed_response.get("action")
+                argument = parsed_response.get("argument")
+
+                if hasattr(actions, action):
+                    action_func = getattr(actions, action)
+                    if asyncio.iscoroutinefunction(action_func):
+                        response = await action_func(argument)
                     else:
-                        # If JSON but unknown action, treat as conversational
-                        speak(llm_response, lang=speak_lang)
-                        conversation_history.append({'role': 'user', 'content': command})
-                        conversation_history.append({'role': 'assistant', 'content': llm_response})
-                except json.JSONDecodeError:
-                    # If not JSON, treat as conversational
-                    speak(llm_response, lang=speak_lang)
+                        response = await asyncio.to_thread(action_func, argument)
+                    print(f"Action response: {response}")
+                    voice.speak(response, lang=speak_lang)
+                    print(f"Speaking: {response}")
+                else:
+                    # If JSON but unknown action, treat as conversational
+                    voice.speak(llm_response, lang=speak_lang)
+                    print(f"Speaking (unknown action): {llm_response}")
                     conversation_history.append({'role': 'user', 'content': command})
                     conversation_history.append({'role': 'assistant', 'content': llm_response})
+            except json.JSONDecodeError:
+                print("Ollama response is not valid JSON. Treating as conversational.")
+                # If not JSON, treat as conversational
+                voice.speak(llm_response, lang=speak_lang)
+                print(f"Speaking (conversational): {llm_response}")
+                conversation_history.append({'role': 'user', 'content': command})
+                conversation_history.append({'role': 'assistant', 'content': llm_response})
+        else:
+            print("No command recognized.")
+    
+    voice.stop()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

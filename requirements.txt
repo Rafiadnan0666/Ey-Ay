@@ -5,4 +5,6 @@ ollama
 requests
 beautifulsoup4
 python-nmap
-googlesearch-python
+user_agent
+pywebio
+duckduckgo-search

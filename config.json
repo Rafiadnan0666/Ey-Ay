@@ -13,7 +13,13 @@
       "listen_timeout": 8,
       "command_timeout": 30,
       "default_search_engine": "google",
-      "name": "Jarvis"
+      "name": "Jarvis",
+      "voice": {
+        "english_voice": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices\\Tokens\\TTS_MS_EN-US_ZIRA_11.0",
+        "indonesian_voice": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices\\Tokens\\TTS_MS_ID-ID_ANDIKA_11.0",
+        "rate": 175,
+        "volume": 1.0
+      }
     }
   },
   "name": "Jarvis"

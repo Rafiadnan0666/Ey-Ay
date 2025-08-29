@@ -1,13 +1,17 @@
 import os
 import subprocess
 import json
+import sys
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
 import nmap
 import hashlib
-from googlesearch import search
+from duckduckgo_search import DDGS
+import requests
+from bs4 import BeautifulSoup
 import ollama_integration
+import asyncio
 
 def create_file(file_path):
     """Creates an empty file at the specified path."""
@@ -100,15 +104,43 @@ def summarize_text(text):
     summary = summarizer(parser.document, 2)  # Summarize to 2 sentences
     return " ".join(str(sentence) for sentence in summary)
 
-def web_search(query):
-    """Performs a web search using Google and returns the results."""
+
+def scrape_website(url):
+    """Scrapes the text content of a website."""
     try:
-        results = []
-        for j in search(query, num_results=3):
-            results.append(j)
-        return "\n".join(results) if results else "No results found."
+        response = requests.get(url)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        paragraphs = soup.find_all('p')
+        text = '\n'.join([p.get_text() for p in paragraphs])
+        return text
     except Exception as e:
-        return f"Error performing web search: {e}"
+        return f"Error scraping website: {e}"
+
+
+from duckduckgo_search import DDGS
+import requests
+from bs4 import BeautifulSoup
+
+def web_search(query):
+    """Performs a web search, scrapes the top result, and returns a summary."""
+    try:
+        with DDGS() as ddgs:
+            results = [r for r in ddgs.text(query, max_results=1)]
+            if not results:
+                return "No results found."
+
+            top_result_url = results[0]['href']
+            
+            # Scrape the website content
+            scraped_text = scrape_website(top_result_url)
+            if "Error" in scraped_text:
+                return scraped_text
+
+            # Summarize the content
+            summary = summarize_text(scraped_text)
+            return summary if summary else "Could not summarize the content."
+    except Exception as e:
+        return f"Error performing web search: {e}" 
 
 
 def port_scan(target, ports):
@@ -142,10 +174,14 @@ def run_command(command):
 def search_youtube_music(query):
     """Searches for music on YouTube."""
     try:
-        results = []
-        for j in search(f"{query} youtube music", num_results=3):
-            results.append(j)
-        return "\n".join(results) if results else "No music found on YouTube."
+        with DDGS() as ddgs:
+            results = [r for r in ddgs.videos(f"{query} youtube music", max_results=3)]
+            if not results:
+                return "No music found on YouTube."
+            
+            links = [result['content'] for result in results]
+            return "\n".join(links)
+
     except Exception as e:
         return f"Error searching YouTube music: {e}"
 
@@ -164,3 +200,53 @@ def open_app_by_name(app_name):
         return f"Opening {app_name}"
     except Exception as e:
         return f"Error opening application: {e}"
+
+def list_files(directory="."):
+    """Lists files in the specified directory."""
+    try:
+        files = os.listdir(directory)
+        return "\n".join(files)
+    except Exception as e:
+        return f"Error listing files: {e}"
+
+def execute_code(code):
+    """Executes a string of Python code."""
+    try:
+        output = exec(code)
+        return output
+    except Exception as e:
+        return f"Error executing code: {e}"
+
+def task_complete(reasoning):
+    """Signals that the task is complete."""
+    return reasoning
+
+async def do_until_done(prompt, conversation_history):
+    """Executes a series of actions to complete a task."""
+    while True:
+        llm_response = await asyncio.to_thread(ollama_integration.get_ollama_response, prompt, conversation_history)
+        try:
+            parsed_response = json.loads(llm_response)
+            action = parsed_response.get("action")
+            arguments = parsed_response.get("argument")
+            reasoning = parsed_response.get("reasoning")
+            task_is_complete = parsed_response.get("task_complete")
+
+            if task_is_complete:
+                return reasoning
+
+            if hasattr(sys.modules[__name__], action):
+                action_func = getattr(sys.modules[__name__], action)
+                if asyncio.iscoroutinefunction(action_func):
+                    response = await action_func(**arguments)
+                else:
+                    response = await asyncio.to_thread(action_func, **arguments)
+                
+                print(response)
+                conversation_history.append({'role': 'assistant', 'content': response})
+                prompt = f"The last action returned: {response}. What is the next action?"
+            else:
+                return f"Unknown action: {action}"
+        except json.JSONDecodeError:
+            return llm_response
+

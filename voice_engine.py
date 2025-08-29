@@ -7,6 +7,7 @@ import time
 class VoiceEngine:
     def __init__(self):
         self.engine = pyttsx3.init()
+        self.list_voices()  # Add this line to list voices on startup
         self.queue = queue.Queue()
         self.active = False
         self.lock = threading.Lock()
@@ -14,10 +15,20 @@ class VoiceEngine:
         self.load_config()
         self.thread.start()
 
+    def list_voices(self):
+        """Lists all available voices and their properties."""
+        voices = self.engine.getProperty('voices')
+        for voice in voices:
+            print(f"ID: {voice.id}")
+            print(f"  Name: {voice.name}")
+            print(f"  Gender: {voice.gender}")
+            print(f"  Languages: {voice.languages}")
+            print(f"  Age: {voice.age}")
+
     def load_config(self):
         with open('config.json') as f:
             config = json.load(f)
-            self.voice_config = config['settings']['voice']
+            self.voice_config = config['config']['settings']['voice']
 
     def _configure_voice(self, lang='en'):
         """Configure voice settings based on language"""
