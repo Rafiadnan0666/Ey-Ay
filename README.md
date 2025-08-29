@@ -23,9 +23,9 @@ This project provides an AI-powered terminal assistant named Jarvis that can und
 
 2.  **Ollama Setup:**
     -   Download and install Ollama from [ollama.ai](https://ollama.ai/).
-    -   Pull the `qwen2.5:0.5b` model (or your preferred model):
+    -   Pull the `phi3:mini` model (or your preferred model):
         ```bash
-        ollama pull qwen2.5:0.5b
+        ollama pull phi3:mini
         ```
 
 3.  **Configuration (Optional):**
