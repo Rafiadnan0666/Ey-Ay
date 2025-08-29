@@ -1,6 +1,9 @@
 import ollama
 import json
 
+# Initialize the Ollama client
+client = ollama.Client(host='http://localhost:11434')
+
 def get_ollama_response(prompt: str, model_name: str = "phi3:mini", conversation_history: list = None):
     messages = []
     
@@ -58,7 +61,9 @@ Now, based on the user's input:"""
     messages.append({'role': 'user', 'content': prompt})
 
     try:
-        response = ollama.chat(model=model_name, messages=messages)
+        response = client.chat(model=model_name, messages=messages)
         return response['message']['content']
+    except ollama.ResponseError as e:
+        return f"Error from Ollama: {e.error}"
     except Exception as e:
-        return f"Error communicating with Ollama: {e}"
+        return "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download"
