@@ -23,5 +23,9 @@
       }
     }
   },
-  "name": "Jarvis"
+  "name": "Jarvis",
+  "ollama": {
+    "host": "http://localhost",
+    "port": 11434
   }
+}

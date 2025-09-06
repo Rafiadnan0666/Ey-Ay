@@ -1,8 +1,14 @@
 import ollama
 import json
 
+# Load configuration
+with open('config.json', 'r') as f:
+    config = json.load(f)
+
 # Initialize the Ollama client
-client = ollama.Client(host='http://localhost:11434')
+host = config.get('ollama', {}).get('host', 'http://localhost')
+port = config.get('ollama', {}).get('port', 11434)
+client = ollama.Client(host=f"{host}:{port}")
 
 def get_ollama_response(prompt: str, model_name: str = "phi3:mini", conversation_history: list = None):
     messages = []

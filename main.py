@@ -51,14 +51,20 @@ class AdvancedAssistant:
     
     def listen(self):
         """Listens for user input and returns the recognized text and detected language."""
+        print("Entering listen method...")
         r = sr.Recognizer()
         with sr.Microphone() as source:
-            print("Listening...")
+            print("Adjusting for ambient noise...")
             r.adjust_for_ambient_noise(source, duration=1)
+            print("Listening for audio...")
             try:
                 audio = r.listen(source, timeout=10, phrase_time_limit=15)
+                print("Audio captured, now recognizing...")
             except sr.WaitTimeoutError:
                 print("Listening timed out. Please check your microphone and ensure you are speaking clearly.")
+                return None, None
+            except Exception as e:
+                print(f"Error during listening: {e}")
                 return None, None
 
         command = None

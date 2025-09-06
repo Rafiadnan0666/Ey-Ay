@@ -204,7 +204,22 @@
       "role": "assistant",
       "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
       "timestamp": "2025-08-29T22:32:50.652285"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! I'm your advanced AI assistant. How can I help you today?",
+      "timestamp": "2025-09-06T22:32:37.121285"
+    },
+    {
+      "role": "user",
+      "content": "hello",
+      "timestamp": "2025-09-06T22:32:47.949839"
+    },
+    {
+      "role": "assistant",
+      "content": "Error communicating with Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+      "timestamp": "2025-09-06T22:32:52.030492"
     }
   ],
-  "last_updated": "2025-08-29T22:32:50.653481"
+  "last_updated": "2025-09-06T22:32:52.031675"
 }
